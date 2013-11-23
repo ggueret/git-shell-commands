@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Keylist
+# Add a new SSH key
+
+if [ "$_" != `which su` ]
+then
+    echo "Only local users can remove repositories."
+    echo "Tip: Use 'su git' from the root account on this server."
+    exit 128
+fi
+
+pubkey_temp=`tempfile`
+
+while read line
+do
+    echo $line > $pubkey_temp
+    ssh-keygen -l -f $pubkey_temp
+done < .ssh/authorized_keys
+
+rm -f $pubkey_temp

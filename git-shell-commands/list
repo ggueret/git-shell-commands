@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# List
+# Display available repositories
+
+echo "The following repositories are on stage :"
+for repository in `find . -type d -name \*.git`
+do
+    echo "   $(basename $repository)"
+done

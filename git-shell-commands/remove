@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# Remove
+# Allow local users to remove repositories
+
+if [ "$_" != `which su` ]
+then
+    echo "Only local users can remove repositories."
+    echo "Tip: Use 'su git' from the root account on this server."
+    exit 128
+fi
+
+if [ $# -eq 0 ]
+then
+    echo "You must supply the project name."
+    echo "Usage: remove <project>"
+    exit 128
+fi
+
+# Append '.git' to the repository name if needed.
+repo_name=`/bin/echo $1 | sed 's/\.git\|$/.git/i'`
+
+if [ ! -d "$repo_name" ]
+then
+    echo "This repository does not exist."
+    exit 128
+fi
+
+echo -n "Are you sure about removing this project ? (y/n): "
+read answer
+if [ $answer != "y" ] && [ $answer != "Y" ]
+then
+    echo "Aborded."
+    exit 0
+fi
+
+# Finally remove the repository.
+rm -rf "$repo_name" &&
+echo "$repo_name are successfully removed"

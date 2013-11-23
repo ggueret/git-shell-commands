@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Keyadd
+# Add a new SSH key
+
+if [ "$_" != `which su` ]
+then
+    echo "Only local users can remove repositories."
+    echo "Tip: Use 'su git' from the root account on this server."
+    exit 128
+fi
+
+echo "Put the public key here :"
+read pubkey
+
+# Create a tempfile to pass pubkey to ssh-keygen.
+pubkey_temp=`tempfile`
+echo $pubkey > $pubkey_temp
+ssh-keygen -l -f $pubkey_temp > /dev/null
+keycheck_retcode=$?
+# Finally remove the tempfile.
+rm -f $pubkey_temp
+
+if [ $keycheck_retcode -ne 0 ]
+then
+    echo "Submitted SSH key is invalid, abord."
+    exit 128
+fi
+
+while read line
+do
+    if [ "$line" = "$pubkey" ]
+    then
+        echo "Submitted SSH key already exists, abord."
+        exit 128
+    fi
+done < .ssh/authorized_keys
+
+echo $pubkey >> .ssh/authorized_keys
+echo "Submitted SSH key has been successfully added."

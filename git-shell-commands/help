@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Help
+# Display available commands
+
+if [ -f .motd ]
+then
+    cat .motd
+fi
+
+echo "The following commands are available :"
+for command in `ls git-shell-commands/*`
+do
+    if [ -x $command ]
+    then
+        echo "   $(basename $command)"
+    fi
+done
