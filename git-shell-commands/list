@@ -4,7 +4,7 @@
 # Display available repositories
 
 echo "The following repositories are on stage :"
-for repository in `find . -type d -name \*.git`
+for repository in `find . -type d -name \*.git ! -path ./.git`
 do
     echo "   $(basename $repository)"
 done
